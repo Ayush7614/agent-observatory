@@ -51,18 +51,30 @@ gh pr create --title "feat(core): description" --body "..."
 
 ---
 
-## Stacked PRs (optional)
+## Stacked PRs (use with caution)
 
-For dependent work, branch from the feature branch:
+**Default: always open PRs against `main`.** Stacked PRs caused PR #2 to merge into a feature branch instead of `main`.
+
+If you must stack:
 
 ```bash
 git checkout feat/core-sqlite-store
 git checkout -b feat/claude-code-ingestion
-# ... work ...
 gh pr create --base feat/core-sqlite-store
 ```
 
-Merge bottom-up: merge PR #1 first, then rebase PR #2 onto main.
+**After merging a stacked PR, you MUST also merge into `main`:**
+
+```bash
+# After PR #1 merges to main and PR #2 merges to the feature branch:
+git checkout main && git pull
+git merge origin/feat/core-sqlite-store   # or rebase PR #2 onto main
+git push origin main
+```
+
+Or open a follow-up PR: `feat/core-sqlite-store` → `main` to sync remaining commits.
+
+**Recommended:** Avoid stacked PRs. Branch everything from `main` and keep PRs independent.
 
 ---
 
@@ -81,8 +93,9 @@ gh pr merge <number> --squash --delete-branch
 
 | PR | Branch | Status |
 |----|--------|--------|
-| #1 | `feat/core-sqlite-store` | SQLite store + FTS search |
-| #2 | `feat/claude-code-ingestion` | Claude Code live ingestion |
-| #3 | `feat/dashboard-mission-control` | Dashboard UI |
+| [#1](https://github.com/Ayush7614/agent-observatory/pull/1) | `feat/core-sqlite-store` | Merged |
+| [#2](https://github.com/Ayush7614/agent-observatory/pull/2) | `feat/claude-code-ingestion` | Merged (into feature branch — synced via #3) |
+| #3 | `fix/sync-pr2-to-main` | Sync PR #2 ingestion into `main` |
+| #4 | `feat/dashboard-mission-control` | Planned — Dashboard UI |
 
 _Update this table as PRs are opened/merged._

@@ -5,7 +5,7 @@
  * Zero npm dependencies — Node.js stdlib only.
  */
 
-export { SESSION_STATUS, AGENT_STATE, EVENT_TYPES } from './types.js'
+export { SESSION_STATUS, AGENT_STATE, EVENT_TYPES, emptyTokenUsage, generateId } from './types.js'
 export { loadConfig, resolvePath, getDataDir } from './config.js'
 export { EventBus } from './events.js'
 export { SessionStore } from './store.js'
