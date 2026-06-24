@@ -6,7 +6,7 @@
 
 ## Prerequisites
 
-- **Node.js** 20+ (LTS recommended)
+- **Node.js** 22+ (required for built-in `node:sqlite`) — use `nvm use` (see `.nvmrc`)
 - **npm** 10+
 - **Git**
 - **Claude Code** (for testing the Claude Code adapter)
