@@ -4,6 +4,7 @@ import { handleSearch } from './search.js'
 import { handleLive } from './sse.js'
 import { handleHooks } from './hooks.js'
 import { handleStats } from './stats.js'
+import { serveDashboard, dashboardBuilt } from '../static.js'
 
 /**
  * Simple HTTP router.
@@ -34,10 +35,12 @@ export function createRouter(ctx) {
     if (pathname.startsWith('/api/sessions')) return handleSessions(req, res, ctx, url)
     if (pathname.startsWith('/api/hooks/')) return handleHooks(req, res, ctx, url)
 
-    // Dashboard static files (production — served by dashboard build)
-    if (pathname === '/' || pathname.startsWith('/assets/')) {
+    // Dashboard static files (production build)
+    if (serveDashboard(req, res, pathname)) return
+
+    if (pathname === '/' && !dashboardBuilt()) {
       res.writeHead(200, { 'Content-Type': 'text/html' })
-      res.end(getPlaceholderHtml(ctx.config.port))
+      res.end(getDevHintHtml(ctx.config.port))
       return
     }
 
@@ -46,7 +49,7 @@ export function createRouter(ctx) {
   }
 }
 
-function getPlaceholderHtml(port) {
+function getDevHintHtml(port) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,48 +60,37 @@ function getPlaceholderHtml(port) {
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0a0f;
-      color: #e4e4e7;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: #0a0a0f; color: #e4e4e7; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; padding: 2rem;
     }
     .card {
-      text-align: center;
-      padding: 3rem;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      backdrop-filter: blur(20px);
-      max-width: 480px;
+      max-width: 520px; padding: 2.5rem;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; backdrop-filter: blur(20px);
     }
-    h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
-    .gradient {
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem;
       background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    p { color: #a1a1aa; margin: 1rem 0; line-height: 1.6; }
-    .status {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      background: rgba(34, 197, 94, 0.15);
-      color: #4ade80;
-      border-radius: 999px;
-      font-size: 0.875rem;
-      margin-top: 1rem;
-    }
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    p { color: #a1a1aa; margin: 0.75rem 0; line-height: 1.6; font-size: 0.95rem; }
     code { background: rgba(255,255,255,0.06); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85rem; }
+    .status { display: inline-block; margin-top: 1rem; padding: 0.25rem 0.75rem;
+      background: rgba(34,197,94,0.15); color: #4ade80; border-radius: 999px; font-size: 0.875rem; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1><span class="gradient">Agent Observatory</span></h1>
-    <p>Server is running. Dashboard UI coming in Day 4 sprint.</p>
-    <p>API available at <code>/api/*</code></p>
-    <div class="status">● Online — port ${port}</div>
+    <h1>Agent Observatory</h1>
+    <p>API server is running on port ${port}.</p>
+    <p>For development, run the dashboard separately:</p>
+    <p><code>npm run dev:dashboard</code> → <code>http://127.0.0.1:5173</code></p>
+    <p>For production, build first:</p>
+    <p><code>npm run build:dashboard && npm run start</code></p>
+    <div class="status">● API online</div>
   </div>
 </body>
 </html>`
+}
+
+function getPlaceholderHtml(port) {
+  return getDevHintHtml(port)
 }

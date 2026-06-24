@@ -25,6 +25,7 @@
     "dev": "npm run dev --workspace=@agent-observatory/server",
     "dev:dashboard": "npm run dev --workspace=@agent-observatory/dashboard",
     "build": "npm run build --workspaces --if-present",
+    "build:dashboard": "npm run build --workspace=@agent-observatory/dashboard",
     "start": "node bin/agent-observatory.js start",
     "stop": "node bin/agent-observatory.js stop",
     "status": "node bin/agent-observatory.js status",
