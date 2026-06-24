@@ -34,7 +34,7 @@
     "stop": "node bin/agent-observatory.js stop",
     "status": "node bin/agent-observatory.js status",
     "install-hooks": "node bin/agent-observatory.js install-hooks",
-    "test": "node scripts/check-node.mjs && node --test packages/core/test/store.test.js packages/core/test/cost.test.js packages/adapters/claude-code/test/parser.test.js packages/adapters/claude-code/test/ingest.test.js",
+    "test": "node scripts/check-node.mjs && node --test packages/core/test/store.test.js packages/core/test/cost.test.js packages/core/test/export.test.js packages/adapters/claude-code/test/parser.test.js packages/adapters/claude-code/test/ingest.test.js",
     "lint": "node --check packages/core/src/*.js packages/server/src/*.js bin/*.js"
   },
   "engines": {

@@ -98,6 +98,7 @@ gh pr merge <number> --squash --delete-branch
 | #3 | `fix/sync-pr2-to-main` | Merged — sync PR #2 to main |
 | [#4](https://github.com/Ayush7614/agent-observatory/pull/4) | `feat/dashboard-mission-control` | Mission Control dashboard |
 | [#6](https://github.com/Ayush7614/agent-observatory/pull/6) | `fix/local-model-zero-cost` | Merged — Ollama $0 cost |
-| #7 | `feat/dashboard-sessions-search` | Planned — Sessions + search |
+| #7 | `feat/dashboard-sessions-search` | Merged — Sessions + search |
+| #8 | `feat/session-export-recover` | Planned — Export + recover CLI |
 
 _Update this table as PRs are opened/merged._
