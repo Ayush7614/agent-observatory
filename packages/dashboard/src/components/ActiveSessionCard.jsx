@@ -1,4 +1,4 @@
-import { formatAgent, formatModel, formatCost, formatTokens, contextColor } from '../lib/format'
+import { formatAgent, formatModel, formatCost, formatTokens, contextColor, isLocalModel } from '../lib/format'
 
 function Stat({ label, value }) {
   return (
@@ -29,6 +29,7 @@ export default function ActiveSessionCard({ session, lastTool }) {
 
   const tokens = session.tokenUsage || {}
   const context = session.contextPercent || 0
+  const local = isLocalModel(session.model)
 
   return (
     <div className="glass-card p-6 h-full">
@@ -42,6 +43,9 @@ export default function ActiveSessionCard({ session, lastTool }) {
           </p>
           <p className="text-sm text-zinc-500 mt-0.5">
             {formatAgent(session.agentId)} · {formatModel(session.model)}
+            {local && (
+              <span className="ml-2 text-xs text-cyan-400/90">· Ollama / local</span>
+            )}
           </p>
         </div>
         <span className="shrink-0 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
@@ -66,7 +70,7 @@ export default function ActiveSessionCard({ session, lastTool }) {
         <Stat label="Input" value={formatTokens(tokens.input)} />
         <Stat label="Output" value={formatTokens(tokens.output)} />
         <Stat label="Cache read" value={formatTokens(tokens.cacheRead)} />
-        <Stat label="Session cost" value={formatCost(session.estimatedCostUsd)} />
+        <Stat label="Session cost" value={formatCost(session.estimatedCostUsd, { local })} />
       </div>
 
       <div className="flex flex-wrap gap-3 text-xs text-zinc-500 pt-3 border-t border-white/[0.06]">
