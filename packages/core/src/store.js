@@ -152,7 +152,7 @@ export class SessionStore {
    */
   async insertToolEvent(event) {
     const db = this.#db()
-    db.prepare(`
+    const result = db.prepare(`
       INSERT OR IGNORE INTO tool_events (
         id, session_id, timestamp, tool, input_summary, output_summary,
         lines_added, lines_removed, duration_ms, exit_code
@@ -170,17 +170,19 @@ export class SessionStore {
       event.exitCode ?? null
     )
 
-    db.prepare(`
-      UPDATE sessions SET tool_call_count = tool_call_count + 1, updated_at = ?
-      WHERE id = ?
-    `).run(event.timestamp, event.sessionId)
+    if (result.changes > 0) {
+      db.prepare(`
+        UPDATE sessions SET tool_call_count = tool_call_count + 1, updated_at = ?
+        WHERE id = ?
+      `).run(event.timestamp, event.sessionId)
 
-    const summary = `${event.tool} ${event.inputSummary || ''}`.trim()
-    if (summary) {
-      db.prepare(`INSERT INTO sessions_fts (session_id, content) VALUES (?, ?)`).run(
-        event.sessionId,
-        summary
-      )
+      const summary = `${event.tool} ${event.inputSummary || ''}`.trim()
+      if (summary) {
+        db.prepare(`INSERT INTO sessions_fts (session_id, content) VALUES (?, ?)`).run(
+          event.sessionId,
+          summary
+        )
+      }
     }
   }
 

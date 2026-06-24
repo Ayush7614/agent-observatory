@@ -1,6 +1,13 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { parseJsonlLine, extractToolEvent, extractTokenUsage } from '../src/parser.js'
+import {
+  parseJsonlLine,
+  extractToolEvent,
+  extractTokenUsage,
+  extractMessage,
+  extractModel,
+  extractTextContent,
+} from '../src/parser.js'
 
 describe('Claude Code JSONL parser', () => {
   it('parses valid JSONL', () => {
@@ -29,13 +36,32 @@ describe('Claude Code JSONL parser', () => {
     assert.equal(event.sessionId, 'session-123')
   })
 
-  it('extracts token usage', () => {
+  it('extracts user messages', () => {
     const entry = {
-      usage: { input_tokens: 1000, output_tokens: 200, cache_read_input_tokens: 500 },
+      type: 'user',
+      uuid: 'u1',
+      timestamp: '2026-06-24T10:00:00Z',
+      message: { role: 'user', content: 'hello world' },
     }
-    const usage = extractTokenUsage(entry)
-    assert.equal(usage.input, 1000)
-    assert.equal(usage.output, 200)
-    assert.equal(usage.cacheRead, 500)
+    const msg = extractMessage(entry, 'sess-1')
+    assert.ok(msg)
+    assert.equal(msg.role, 'user')
+    assert.equal(msg.content, 'hello world')
+  })
+
+  it('extracts model from assistant entry', () => {
+    const entry = {
+      type: 'assistant',
+      message: { model: 'claude-opus-4-6', role: 'assistant', content: [] },
+    }
+    assert.equal(extractModel(entry), 'claude-opus-4-6')
+  })
+
+  it('extracts text from content blocks', () => {
+    const text = extractTextContent([
+      { type: 'text', text: 'Hello' },
+      { type: 'tool_use', name: 'Read' },
+    ])
+    assert.equal(text, 'Hello')
   })
 })
