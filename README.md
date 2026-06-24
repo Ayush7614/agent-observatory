@@ -7,8 +7,9 @@ Agent Observatory is a **local-first, zero-telemetry** command center for coding
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js 22+](https://img.shields.io/badge/node-22%2B-green.svg)](.nvmrc)
 [![Release](https://img.shields.io/badge/release-v0.1.0-violet.svg)](https://github.com/Ayush7614/agent-observatory/releases/tag/v0.1.0)
+[![Website](https://img.shields.io/badge/website-agent--observatory.dev-indigo.svg)](https://agent-observatory.dev)
 
-> **v0.1.0** — Claude Code MVP · MIT · [Changelog](./CHANGELOG.md)
+> **v0.1.0** — Claude Code MVP · MIT · [Website](https://agent-observatory.dev) · [Changelog](./CHANGELOG.md)
 
 ---
 
@@ -151,6 +152,7 @@ See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 | Doc | Description |
 |-----|-------------|
+| [Website deploy](./docs/WEBSITE-DEPLOY.md) | Custom domain (agent-observatory.dev) |
 | [Launch guide](./docs/LAUNCH.md) | Go public + screenshots |
 | [Roadmap](./docs/ROADMAP.md) | v0.2 → v1.0 |
 | [MVP](./docs/MVP.md) | v0.1 scope |
@@ -170,6 +172,7 @@ agent-observatory/
 ├── packages/adapters/
 │   └── claude-code/         JSONL watcher + hook parser
 ├── hooks/claude-code/       Scripts for install-hooks
+├── website/                 Marketing landing page (deploy separately)
 ├── bin/agent-observatory.js CLI (ao)
 └── docs/
 ```
