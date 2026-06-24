@@ -23,13 +23,16 @@ export class AdapterManager {
 
   async startAll() {
     for (const adapter of BUILTIN_ADAPTERS) {
-      const agentConfig = this.config.agents?.[adapter.id]
-      if (agentConfig?.enabled === false) {
+      const agentConfig = {
+        ...(this.config.agents?.[adapter.id] || {}),
+        dataDir: this.config.dataDir,
+      }
+      if (agentConfig.enabled === false) {
         console.log(`[adapters] Skipping disabled adapter: ${adapter.id}`)
         continue
       }
       try {
-        await adapter.start(agentConfig || {}, this.eventBus, this.store)
+        await adapter.start(agentConfig, this.eventBus, this.store)
         this.#active.set(adapter.id, adapter)
         console.log(`[adapters] Started: ${adapter.name}`)
       } catch (err) {

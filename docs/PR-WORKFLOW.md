@@ -81,8 +81,8 @@ gh pr merge <number> --squash --delete-branch
 
 | PR | Branch | Status |
 |----|--------|--------|
-| #1 | `feat/core-sqlite-store` | SQLite store + FTS search |
-| #2 | `feat/claude-code-ingestion` | Claude Code live ingestion |
-| #3 | `feat/dashboard-mission-control` | Dashboard UI |
+| [#1](https://github.com/Ayush7614/agent-observatory/pull/1) | `feat/core-sqlite-store` | Open — SQLite store + FTS search |
+| [#2](https://github.com/Ayush7614/agent-observatory/pull/2) | `feat/claude-code-ingestion` | Open — Claude Code live ingestion |
+| #3 | `feat/dashboard-mission-control` | Planned — Dashboard UI |
 
 _Update this table as PRs are opened/merged._

@@ -16,6 +16,7 @@ import {
 } from '@agent-observatory/core'
 import { createRouter } from './routes/index.js'
 import { AdapterManager } from './adapters.js'
+import { wirePersistence } from './persistence.js'
 
 const LOG_LEVELS = { debug: 0, info: 1, warn: 2, error: 3 }
 const logLevel = LOG_LEVELS[process.env.AO_LOG_LEVEL || 'info'] ?? 1
@@ -34,6 +35,7 @@ export async function startServer(options = {}) {
   await store.init()
 
   const search = new SearchIndex(store)
+  wirePersistence(eventBus, store)
   const adapters = new AdapterManager(config, eventBus, store)
 
   const host = config.bindLan ? '0.0.0.0' : config.host || '127.0.0.1'
