@@ -35,6 +35,43 @@ export function formatTime(iso) {
   }
 }
 
+export function formatDate(iso) {
+  if (!iso) return '—'
+  try {
+    return new Date(iso).toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    })
+  } catch {
+    return '—'
+  }
+}
+
+export function formatDateTime(iso) {
+  if (!iso) return '—'
+  try {
+    return new Date(iso).toLocaleString([], {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  } catch {
+    return '—'
+  }
+}
+
+export function statusBadgeClass(status) {
+  const map = {
+    active: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
+    idle: 'bg-zinc-500/15 text-zinc-400 border-zinc-500/20',
+    completed: 'bg-sky-500/15 text-sky-400 border-sky-500/20',
+    crashed: 'bg-rose-500/15 text-rose-400 border-rose-500/20',
+  }
+  return map[status] || map.idle
+}
+
 export function formatModel(model) {
   if (!model || model === 'unknown') return 'Unknown model'
   return model

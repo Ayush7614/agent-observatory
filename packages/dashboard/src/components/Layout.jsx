@@ -1,6 +1,6 @@
 const tabs = [
   { id: 'home', label: 'Mission Control' },
-  { id: 'sessions', label: 'Sessions', disabled: true },
+  { id: 'sessions', label: 'Sessions' },
   { id: 'settings', label: 'Settings', disabled: true },
 ]
 
