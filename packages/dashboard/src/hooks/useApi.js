@@ -3,9 +3,15 @@ import { useCallback, useEffect, useState } from 'react'
 export function useApi(path, refreshMs = 0) {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(Boolean(path))
 
   const reload = useCallback(async () => {
+    if (!path) {
+      setData(null)
+      setError(null)
+      setLoading(false)
+      return
+    }
     try {
       const res = await fetch(path)
       if (!res.ok) throw new Error(`${res.status}`)
@@ -19,11 +25,18 @@ export function useApi(path, refreshMs = 0) {
   }, [path])
 
   useEffect(() => {
+    if (!path) {
+      setData(null)
+      setError(null)
+      setLoading(false)
+      return
+    }
+    setLoading(true)
     reload()
     if (!refreshMs) return
     const id = setInterval(reload, refreshMs)
     return () => clearInterval(id)
-  }, [reload, refreshMs])
+  }, [reload, refreshMs, path])
 
   return { data, error, loading, reload }
 }
