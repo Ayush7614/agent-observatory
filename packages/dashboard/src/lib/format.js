@@ -5,9 +5,21 @@ export function formatTokens(n) {
   return String(n)
 }
 
-export function formatCost(usd) {
+export function formatCost(usd, { local = false } = {}) {
+  if (local) return 'Free · local'
   if (usd == null || Number.isNaN(usd)) return '$0.00'
   return `$${Number(usd).toFixed(2)}`
+}
+
+/** Match Ollama/local model names for UI (mirrors core isLocalModel) */
+export function isLocalModel(model) {
+  if (!model || model === 'unknown') return false
+  const m = model.toLowerCase()
+  if (['claude-', 'gpt-', 'o1', 'o2', 'o3'].some((p) => m.startsWith(p))) return false
+  if (/:[\w.]+/.test(m)) return true
+  return ['ollama', 'qwen', 'llama', 'mistral', 'gemma', 'phi', 'deepseek'].some((n) =>
+    m.includes(n)
+  )
 }
 
 export function formatTime(iso) {
