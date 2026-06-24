@@ -97,6 +97,7 @@ gh pr merge <number> --squash --delete-branch
 | [#2](https://github.com/Ayush7614/agent-observatory/pull/2) | `feat/claude-code-ingestion` | Merged (into feature branch — synced via #3) |
 | #3 | `fix/sync-pr2-to-main` | Merged — sync PR #2 to main |
 | [#4](https://github.com/Ayush7614/agent-observatory/pull/4) | `feat/dashboard-mission-control` | Mission Control dashboard |
-| #5 | `feat/dashboard-sessions-search` | Planned — Sessions + search |
+| [#6](https://github.com/Ayush7614/agent-observatory/pull/6) | `fix/local-model-zero-cost` | Merged — Ollama $0 cost |
+| #7 | `feat/dashboard-sessions-search` | Planned — Sessions + search |
 
 _Update this table as PRs are opened/merged._
