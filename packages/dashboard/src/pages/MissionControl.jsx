@@ -59,6 +59,20 @@ export default function MissionControl({ events, connected: sseConnected }) {
               <span>{sessionsData?.sessions?.length || 0} sessions indexed</span>
             </>
           )}
+          {health?.snapshots?.enabled && (
+            <>
+              <span>·</span>
+              <span>
+                Snapshots every {health.snapshots.intervalMinutes}m
+                {health.snapshots.lastRunAt && (
+                  <span className="text-zinc-600">
+                    {' '}
+                    · last {new Date(health.snapshots.lastRunAt).toLocaleTimeString()}
+                  </span>
+                )}
+              </span>
+            </>
+          )}
         </div>
       )}
     </motion.div>
