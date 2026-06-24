@@ -1,0 +1,50 @@
+{
+  "name": "agent-observatory",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Universal dashboard for coding AI agents — live monitoring, analytics, session recovery, and remote control",
+  "license": "MIT",
+  "author": "Ayush7614",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ayush7614/agent-observatory.git"
+  },
+  "workspaces": [
+    "packages/core",
+    "packages/server",
+    "packages/dashboard",
+    "packages/adapters/claude-code",
+    "packages/adapters/aider",
+    "packages/adapters/generic"
+  ],
+  "bin": {
+    "agent-observatory": "./bin/agent-observatory.js",
+    "ao": "./bin/agent-observatory.js"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace=@agent-observatory/server",
+    "dev:dashboard": "npm run dev --workspace=@agent-observatory/dashboard",
+    "build": "npm run build --workspaces --if-present",
+    "start": "node bin/agent-observatory.js start",
+    "stop": "node bin/agent-observatory.js stop",
+    "status": "node bin/agent-observatory.js status",
+    "install-hooks": "node bin/agent-observatory.js install-hooks",
+    "test": "node --test packages/adapters/claude-code/test/parser.test.js",
+    "lint": "node --check packages/core/src/*.js packages/server/src/*.js bin/*.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "ai",
+    "coding-agent",
+    "claude-code",
+    "cursor",
+    "aider",
+    "dashboard",
+    "monitoring",
+    "developer-tools",
+    "token-usage",
+    "local-first"
+  ]
+}

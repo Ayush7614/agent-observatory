@@ -1,0 +1,11 @@
+export function handleHealth(_req, res, ctx) {
+  res.writeHead(200, { 'Content-Type': 'application/json' })
+  res.end(
+    JSON.stringify({
+      status: 'ok',
+      version: '0.0.1',
+      adapters: ctx.adapters.list().map((a) => ({ id: a.id, name: a.name })),
+      uptime: process.uptime(),
+    })
+  )
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@agent-observatory/core",
+  "version": "0.0.1",
+  "description": "Universal session model, store, search, and analytics for Agent Observatory",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "license": "MIT"
+}

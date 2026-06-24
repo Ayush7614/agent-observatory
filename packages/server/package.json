@@ -1,0 +1,16 @@
+{
+  "name": "@agent-observatory/server",
+  "version": "0.0.1",
+  "description": "Local HTTP server, SSE, and REST API for Agent Observatory",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@agent-observatory/core": "0.0.1",
+    "@agent-observatory/adapter-claude-code": "0.0.1"
+  },
+  "license": "MIT"
+}

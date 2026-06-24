@@ -1,0 +1,70 @@
+{
+  "$schema": "./packages/core/src/config-schema.json",
+  "port": 7420,
+  "host": "127.0.0.1",
+  "bindLan": false,
+  "dataDir": "~/.agent-observatory",
+  "openBrowser": true,
+  "theme": "dark",
+  "agents": {
+    "claude-code": {
+      "enabled": true,
+      "watchDir": "~/.claude/projects",
+      "snapshotMinutes": 5
+    },
+    "aider": {
+      "enabled": false,
+      "watchDir": "~/.aider"
+    },
+    "generic": {
+      "enabled": false,
+      "sources": []
+    }
+  },
+  "budgets": {
+    "session": 50,
+    "day": 200,
+    "week": 800,
+    "currency": "USD"
+  },
+  "notifications": {
+    "desktop": true,
+    "ntfyTopic": null,
+    "telegramBotToken": null,
+    "telegramChatId": null,
+    "slackWebhook": null,
+    "onBudgetWarning": true,
+    "onBudgetExceeded": true,
+    "onAgentWaiting": true,
+    "onSessionComplete": true
+  },
+  "approvals": {
+    "enabled": true,
+    "timeoutMs": 60000,
+    "autoAllowReadOnly": true
+  },
+  "search": {
+    "maxResults": 50,
+    "semanticSearch": false
+  },
+  "dashboard": {
+    "layout": "default",
+    "widgets": [
+      "live-activity",
+      "token-meter",
+      "context-gauge",
+      "cost-ticker",
+      "session-list",
+      "git-impact"
+    ],
+    "ambientMode": false
+  },
+  "security": {
+    "blockDangerousCommands": true,
+    "dangerousPatterns": [
+      "rm -rf /",
+      "mkfs",
+      "dd if="
+    ]
+  }
+}

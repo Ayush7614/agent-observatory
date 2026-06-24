@@ -1,0 +1,14 @@
+{
+  "name": "@agent-observatory/adapter-claude-code",
+  "version": "0.0.1",
+  "description": "Claude Code adapter for Agent Observatory",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "@agent-observatory/core": "0.0.1"
+  },
+  "license": "MIT"
+}
