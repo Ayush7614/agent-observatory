@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Agent Observatory CLI entry — checks Node 22+ before loading core.
+ * Exit with a helpful message if Node.js < 22 (required for node:sqlite).
  */
 
 const major = Number(process.version.slice(1).split('.')[0])
@@ -16,9 +16,10 @@ if (major < 22) {
      source ~/.nvm/nvm.sh
      nvm use 22
 
+   Or set default:
+     nvm alias default 22
+
    See .nvmrc in the project root.
 `)
   process.exit(1)
 }
-
-await import('./cli.js')

@@ -74,24 +74,46 @@ Each agent connects through a **plugin adapter** that normalizes events into a u
 
 ---
 
-## Quick start (coming in MVP)
+## Quick start
+
+**Requires Node.js 22+** (uses built-in `node:sqlite`). If you use nvm:
 
 ```bash
-# Clone (private repo — access required)
+source ~/.nvm/nvm.sh
+nvm use 22          # or: nvm alias default 22
+node -v             # should show v22.x
+```
+
+```bash
 git clone git@github.com:Ayush7614/agent-observatory.git
 cd agent-observatory
-
-# Install dependencies
 npm install
+```
 
-# Start the dashboard
+### Development (two terminals)
+
+```bash
+# Terminal 1 — API server (:7420)
 npm run dev
 
-# Wire hooks for your agent (example: Claude Code)
-npm run install-hooks -- --agent claude-code
+# Terminal 2 — Dashboard with hot reload (:5173)
+npm run dev:dashboard
+open http://127.0.0.1:5173
+```
 
-# Open dashboard
+### Production (single port)
+
+```bash
+npm run build:dashboard
+npm run start
 open http://127.0.0.1:7420
+```
+
+### Optional: Claude Code hooks
+
+```bash
+npm run install-hooks
+# Restart Claude Code
 ```
 
 ---
