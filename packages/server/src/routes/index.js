@@ -4,6 +4,7 @@ import { handleSearch } from './search.js'
 import { handleLive } from './sse.js'
 import { handleHooks } from './hooks.js'
 import { handleStats } from './stats.js'
+import { handleSettings } from './settings.js'
 import { serveDashboard, dashboardBuilt } from '../static.js'
 
 /**
@@ -18,7 +19,7 @@ export function createRouter(ctx) {
 
     // CORS for dashboard dev server
     res.setHeader('Access-Control-Allow-Origin', '*')
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 
     if (method === 'OPTIONS') {
@@ -32,6 +33,7 @@ export function createRouter(ctx) {
     if (pathname === '/api/live') return handleLive(req, res, ctx)
     if (pathname === '/api/search') return handleSearch(req, res, ctx, url)
     if (pathname === '/api/stats/today') return handleStats(req, res, ctx)
+    if (pathname === '/api/settings') return handleSettings(req, res, ctx)
     if (pathname.startsWith('/api/sessions')) return handleSessions(req, res, ctx, url)
     if (pathname.startsWith('/api/hooks/')) return handleHooks(req, res, ctx, url)
 

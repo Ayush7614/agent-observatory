@@ -6,7 +6,7 @@
  */
 
 export { SESSION_STATUS, AGENT_STATE, EVENT_TYPES, emptyTokenUsage, generateId } from './types.js'
-export { loadConfig, resolvePath, getDataDir } from './config.js'
+export { loadConfig, saveConfig, resolvePath, getDataDir, toSettingsView, patchConfig, getConfigPath } from './config.js'
 export { EventBus } from './events.js'
 export { SessionStore } from './store.js'
 export { SearchIndex } from './search.js'
