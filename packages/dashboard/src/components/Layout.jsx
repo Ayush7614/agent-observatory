@@ -1,7 +1,7 @@
 const tabs = [
   { id: 'home', label: 'Mission Control' },
   { id: 'sessions', label: 'Sessions' },
-  { id: 'settings', label: 'Settings', disabled: true },
+  { id: 'settings', label: 'Settings' },
 ]
 
 export default function Layout({ children, activeTab, onTabChange, connected }) {
