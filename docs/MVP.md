@@ -196,15 +196,16 @@ interface Message {
 
 ## Definition of done (MVP)
 
-- [ ] `npm install && npm run dev` starts dashboard without errors
-- [ ] Active Claude Code session appears in dashboard within 5 seconds
-- [ ] Tool calls stream live via SSE
-- [ ] Search finds text from past sessions
-- [ ] `ao recover` exports readable Markdown after simulated crash
-- [ ] Hooks install cleanly via `install-hooks`
-- [ ] No outbound network calls except optional exchange rate (disabled in MVP)
-- [ ] Works on macOS (primary), Linux (best effort)
-- [ ] README and docs complete for public launch
+- [x] `npm install && npm run dev` starts dashboard without errors
+- [x] Active Claude Code session appears in dashboard within 5 seconds
+- [x] Tool calls stream live via SSE (with hooks installed)
+- [x] Search finds text from past sessions
+- [x] `ao recover` exports readable Markdown
+- [x] Hooks install cleanly via `install-hooks`
+- [x] No outbound telemetry
+- [x] Works on macOS (primary), Linux (best effort)
+- [x] README and docs complete for public launch
+- [ ] Repository public + GitHub release v0.1.0
 
 ---
 

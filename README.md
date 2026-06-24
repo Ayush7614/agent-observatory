@@ -2,134 +2,161 @@
 
 **One beautiful dashboard for every coding AI agent.**
 
-Agent Observatory is a local-first, zero-telemetry platform that unifies monitoring, analytics, session recovery, and remote control for coding agents — whether open source or closed source.
+Agent Observatory is a **local-first, zero-telemetry** command center for coding agents. See live tool activity, search every session, export transcripts for recovery, and track token usage — starting with **Claude Code** today, more agents via adapters in v0.2.
 
-> **Status:** Private development (target public release: ~1 week)  
-> **License:** MIT  
-> **Maintainer:** [Ayush7614](https://github.com/Ayush7614)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node.js 22+](https://img.shields.io/badge/node-22%2B-green.svg)](.nvmrc)
+[![Release](https://img.shields.io/badge/release-v0.1.0-violet.svg)](https://github.com/Ayush7614/agent-observatory/releases/tag/v0.1.0)
 
----
-
-## The problem
-
-Every coding agent ships its own siloed experience:
-
-| Agent | Usage UI | Session history | Phone approvals | Cross-agent view |
-|-------|----------|-----------------|-----------------|------------------|
-| Claude Code | Status bar plugins | Local JSONL | Third-party only | ❌ |
-| Cursor | Built-in billing | Limited | ❌ | ❌ |
-| Aider | Terminal only | `.aider` chat logs | ❌ | ❌ |
-| Codex CLI | OpenAI dashboard | Local logs | ❌ | ❌ |
-| Cline | VS Code panel | Extension storage | ❌ | ❌ |
-
-**Agent Observatory** gives you one mission-control dashboard for all of them.
+> **v0.1.0** — Claude Code MVP · MIT · [Changelog](./CHANGELOG.md)
 
 ---
 
-## What you get
+## Screenshots
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  🎯 Agent Observatory Dashboard          http://127.0.0.1:7420  │
-├─────────────────────────────────────────────────────────────────┤
-│  LIVE          │  Claude Code · running Edit on src/api.ts     │
-│  TOKENS        │  Context ████████░░ 78%  ·  Session $2.41     │
-│  ACTIVITY      │  Read → Edit → Bash → Read → …                │
-│  SESSIONS      │  Search 847 sessions · Recover · Export       │
-│  APPROVALS     │  Allow · Allow all · Deny  (phone + desktop)  │
-└─────────────────────────────────────────────────────────────────┘
-```
+<!-- screenshots: uncomment after adding docs/screenshots/*.png
 
-### Core capabilities (planned)
+<p align="center">
+  <img src="docs/screenshots/mission-control.png" alt="Mission Control" width="800" />
+</p>
 
-- **Live activity feed** — see every tool call, file edit, and shell command in real time
-- **Token & context monitoring** — input/output/cache tokens, context window pressure
-- **Multi-agent support** — Claude Code, Aider, Codex CLI, Cline, Continue, and more via adapters
-- **Session recovery** — never lose context after a crash, freeze, or limit hit
-- **Full-text search** — find anything across every session you've ever run
-- **Cost intelligence** — hourly/daily/weekly spend, budgets, burn-rate alerts
-- **Remote approvals** — Allow/Deny tool calls from your phone (ntfy, Telegram, Slack)
-- **Git impact view** — lines changed, files touched, branch drift
-- **Security audit** — full trail of what agents executed on your machine
+<p align="center">
+  <img src="docs/screenshots/sessions.png" alt="Sessions search" width="800" />
+</p>
+
+-->
+
+_Capture instructions: [docs/LAUNCH.md](./docs/LAUNCH.md)_
 
 ---
 
-## Architecture (high level)
+## Why Agent Observatory?
 
-```
-  Coding Agents                    Agent Observatory
-  ─────────────                    ─────────────────
+Every coding agent ships its own siloed UI. Agent Observatory gives you **one place** to monitor, search, and recover sessions — without sending data to the cloud.
 
-  Claude Code ──adapter──┐
-  Aider       ──adapter──┼──▶ Core (store · search · analytics)
-  Codex CLI   ──adapter──┤         │
-  Cline       ──adapter──┘         ▼
-                              Server (SSE · REST)
-                                   │
-                                   ▼
-                              Dashboard (React)
-```
+| | Claude Code alone | + Agent Observatory |
+|--|-------------------|---------------------|
+| Live tool feed | Hook plugins (fragmented) | Built-in SSE feed |
+| Search all sessions | Manual JSONL grep | Full-text search (FTS5) |
+| Crash recovery | Copy/paste transcript | `ao recover` → Markdown |
+| Local LLM (Ollama) | No cost visibility | **Free · local** ($0) |
+| Multi-agent | ❌ | Adapters (v0.2+) |
 
-Each agent connects through a **plugin adapter** that normalizes events into a universal session model. See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
+---
+
+## Features (v0.1.0)
+
+| Feature | Status |
+|---------|--------|
+| Mission Control dashboard | ✅ |
+| Live tool activity (SSE + hooks) | ✅ |
+| Token & context display | ✅ |
+| Session list + full-text search | ✅ |
+| Transcript preview + Markdown export | ✅ |
+| Auto-snapshots (every 5 min) | ✅ |
+| Settings (budgets, notifications) | ✅ |
+| Claude Code adapter (JSONL + hooks) | ✅ |
+| Ollama / local models ($0 cost) | ✅ |
+| CLI (`ao start`, `recover`, `doctor`) | ✅ |
+| Aider, Codex, Cline adapters | 🔜 v0.2 |
+| Phone approvals (ntfy) | 🔜 v0.2 |
 
 ---
 
 ## Quick start
 
-**Requires Node.js 22+** (uses built-in `node:sqlite`). If you use nvm:
+**Requires Node.js 22+** (built-in `node:sqlite`).
 
 ```bash
-source ~/.nvm/nvm.sh
-nvm use 22          # or: nvm alias default 22
-node -v             # should show v22.x
-```
-
-```bash
-git clone git@github.com:Ayush7614/agent-observatory.git
+source ~/.nvm/nvm.sh && nvm use 22   # if using nvm
+git clone https://github.com/Ayush7614/agent-observatory.git
 cd agent-observatory
 npm install
-```
-
-### Development (two terminals)
-
-```bash
-# Terminal 1 — API server (:7420)
-npm run dev
-
-# Terminal 2 — Dashboard with hot reload (:5173)
-npm run dev:dashboard
-open http://127.0.0.1:5173
-```
-
-### Production (single port)
-
-```bash
 npm run build:dashboard
 npm run start
-open http://127.0.0.1:7420
 ```
 
-### Optional: Claude Code hooks
+Open **http://127.0.0.1:7420**
+
+### Development (hot reload)
 
 ```bash
-npm run install-hooks
-# Restart Claude Code
+npm run dev              # API :7420
+npm run dev:dashboard    # UI  :5173
 ```
+
+### Claude Code hooks (recommended)
+
+Enables **real-time** tool feed and attention alerts:
+
+```bash
+npm run install-hooks    # wires ~/.claude/settings.json
+# Restart Claude Code
+ao doctor                # verify setup
+```
+
+### Session recovery
+
+```bash
+ao recover               # export latest session to Markdown
+ao recover 2             # second most recent
+ao export-all            # bulk export
+```
+
+Exports: `~/.agent-observatory/exports/`  
+Auto-snapshots: `~/.agent-observatory/snapshots/`
+
+---
+
+## Local LLMs (Ollama)
+
+Running Claude Code with **Ollama** (e.g. `qwen2.5:0.5b`)? Observatory detects local models and shows **$0 / Free · local** — no Anthropic API credits required. Cloud models still show API-equivalent cost estimates for usage tracking.
+
+---
+
+## CLI reference
+
+| Command | Description |
+|---------|-------------|
+| `ao start` | Start server (background) |
+| `ao stop` | Stop server |
+| `ao status` | Running / stopped |
+| `ao recover [n\|id]` | Export session to Markdown |
+| `ao export-all` | Export all sessions |
+| `ao install-hooks` | Wire Claude Code hooks |
+| `ao uninstall-hooks` | Remove hooks |
+| `ao doctor` | Check Node, DB, hooks, paths |
+
+---
+
+## Architecture
+
+```
+  Claude Code ──adapter──▶ Core (SQLite · FTS5 · export)
+                                │
+                                ▼
+                          Server (REST · SSE)
+                                │
+                                ▼
+                          Dashboard (React)
+```
+
+Data stays on your machine: `~/.agent-observatory/`
+
+See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
 
 ---
 
 ## Documentation
 
-| Document | Description |
-|----------|-------------|
-| [MVP Spec](./docs/MVP.md) | What we ship in week 1 |
-| [Roadmap](./docs/ROADMAP.md) | v0.1 → v1.0 timeline |
-| [Features](./docs/FEATURES.md) | Complete feature catalog |
-| [Architecture](./docs/ARCHITECTURE.md) | System design & data model |
-| [Adapters](./docs/ADAPTERS.md) | How to integrate each agent |
-| [Development](./docs/DEVELOPMENT.md) | Local setup & conventions |
+| Doc | Description |
+|-----|-------------|
+| [Launch guide](./docs/LAUNCH.md) | Go public + screenshots |
+| [Roadmap](./docs/ROADMAP.md) | v0.2 → v1.0 |
+| [MVP](./docs/MVP.md) | v0.1 scope |
+| [Adapters](./docs/ADAPTERS.md) | Integrate new agents |
 | [Security](./docs/SECURITY.md) | Privacy & threat model |
-| [Contributing](./docs/CONTRIBUTING.md) | How to contribute (post-public) |
+| [Contributing](./docs/CONTRIBUTING.md) | PRs welcome |
 
 ---
 
@@ -137,64 +164,41 @@ npm run install-hooks
 
 ```
 agent-observatory/
-├── packages/
-│   ├── core/              # Universal session model, store, search index
-│   ├── server/            # Local HTTP server, SSE, REST API
-│   ├── dashboard/         # React dashboard (Vite + Tailwind)
-│   └── adapters/
-│       ├── claude-code/   # Claude Code adapter (MVP)
-│       ├── aider/         # Aider adapter (v0.2)
-│       └── generic/       # Generic log-tail adapter (v0.3)
-├── hooks/                 # Hook scripts injected into agents
-├── bin/                   # CLI entry point
-├── docs/                  # All planning & design docs
-└── config.example.json    # Example user configuration
+├── packages/core/           Session store, search, export, config
+├── packages/server/         HTTP server, SSE, API
+├── packages/dashboard/      React UI (Vite + Tailwind)
+├── packages/adapters/
+│   └── claude-code/         JSONL watcher + hook parser
+├── hooks/claude-code/       Scripts for install-hooks
+├── bin/agent-observatory.js CLI (ao)
+└── docs/
 ```
 
 ---
 
-## Supported agents (roadmap)
+## Roadmap snapshot
 
-| Agent | MVP | v0.2 | v0.3 | Notes |
-|-------|-----|------|------|-------|
-| Claude Code | ✅ | — | — | JSONL + hooks |
-| Aider | — | ✅ | — | Git + chat logs |
-| OpenAI Codex CLI | — | ✅ | — | Session logs |
-| Cline | — | — | ✅ | VS Code hooks |
-| Continue | — | — | ✅ | Open config |
-| Cursor | — | — | 🔬 | Extension bridge (research) |
-| Generic log adapter | — | — | ✅ | Bring your own parser |
-
----
-
-## Principles
-
-1. **Local-first** — data stays on your machine by default
-2. **Zero telemetry** — no analytics, no phone-home
-3. **Adapter-based** — new agents = new plugin, not fork
-4. **Never hang the agent** — if Observatory is down, agents work normally
-5. **Beautiful by default** — dashboard you'd actually want open all day
-
----
-
-## Release plan
-
-| Phase | Target | Visibility |
-|-------|--------|------------|
-| **Now** | Scaffold + docs + Claude Code adapter | Private repo |
-| **Week 1** | MVP dashboard + live monitoring + search | **Go public** |
-| **Week 2–4** | More adapters + phone approvals + analytics | Public |
-| **Month 2+** | Team features, semantic search, plugin marketplace | Public |
+| Version | Theme | Highlights |
+|---------|-------|------------|
+| **v0.1** ✅ | See Claude Code clearly | Dashboard, search, export, hooks |
+| **v0.2** | Multi-agent | Aider, Codex CLI, phone approvals |
+| **v0.3** | Intelligence | Analytics, git impact, security audit |
+| **v1.0** | Platform | Adapter SDK, marketplace |
 
 ---
 
 ## Tech stack
 
-- **Runtime:** Node.js 20+
-- **Backend:** Native `http` module (zero deps in core)
-- **Frontend:** Vite + React + Tailwind CSS + Framer Motion
-- **Storage:** SQLite (FTS5 for search) under `~/.agent-observatory/`
+- **Runtime:** Node.js 22+ (`node:sqlite`, zero npm deps in core)
+- **Frontend:** React 19 · Vite · Tailwind · Framer Motion
+- **Storage:** SQLite + FTS5 under `~/.agent-observatory/`
 - **Realtime:** Server-Sent Events (SSE)
+
+---
+
+## Contributing
+
+Contributions welcome — especially **adapters** for new coding agents. See [CONTRIBUTING.md](./docs/CONTRIBUTING.md).
 
 ---
 
@@ -205,5 +209,6 @@ MIT — see [LICENSE](./LICENSE).
 ---
 
 <p align="center">
-  <strong>Agent Observatory</strong> — See everything your coding agents do.
+  <strong>Agent Observatory</strong> — See everything your coding agents do.<br/>
+  <sub>Built by <a href="https://github.com/Ayush7614">Ayush7614</a></sub>
 </p>

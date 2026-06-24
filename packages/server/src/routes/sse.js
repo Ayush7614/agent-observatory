@@ -6,7 +6,7 @@ export function handleLive(req, res, ctx) {
   })
 
   // Send initial connection event
-  res.write(`data: ${JSON.stringify({ type: 'connected', data: { version: '0.0.1' } })}\n\n`)
+  res.write(`data: ${JSON.stringify({ type: 'connected', data: { version: '0.1.0' } })}\n\n`)
 
   const unsubscribe = ctx.eventBus.onAny((type, data) => {
     try {
