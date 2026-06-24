@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Layout from './components/Layout'
 import MissionControl from './pages/MissionControl'
 import SessionsPage from './pages/SessionsPage'
+import SettingsPage from './pages/SettingsPage'
 import { useLiveEvents } from './hooks/useApi'
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
     <Layout activeTab={activeTab} onTabChange={setActiveTab} connected={connected}>
       {activeTab === 'home' && <MissionControl events={events} connected={connected} />}
       {activeTab === 'sessions' && <SessionsPage />}
+      {activeTab === 'settings' && <SettingsPage />}
     </Layout>
   )
 }

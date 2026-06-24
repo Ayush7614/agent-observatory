@@ -13,6 +13,7 @@ import {
   EventBus,
   SessionStore,
   SearchIndex,
+  getConfigPath,
 } from '@agent-observatory/core'
 import { createRouter } from './routes/index.js'
 import { AdapterManager } from './adapters.js'
@@ -30,6 +31,7 @@ function log(level, ...args) {
 
 export async function startServer(options = {}) {
   const config = loadConfig(options.configPath)
+  const configPath = options.configPath || getConfigPath()
   const dataDir = getDataDir(config)
   const eventBus = new EventBus()
   const store = new SessionStore(dataDir)
@@ -42,7 +44,7 @@ export async function startServer(options = {}) {
   const host = config.bindLan ? '0.0.0.0' : config.host || '127.0.0.1'
   const port = config.port || 7420
 
-  const router = createRouter({ config, store, search, eventBus, adapters })
+  const router = createRouter({ config, configPath, store, search, eventBus, adapters })
 
   const server = http.createServer((req, res) => {
     // Localhost-only guard for hook endpoints
