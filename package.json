@@ -29,11 +29,11 @@
     "stop": "node bin/agent-observatory.js stop",
     "status": "node bin/agent-observatory.js status",
     "install-hooks": "node bin/agent-observatory.js install-hooks",
-    "test": "node --test packages/adapters/claude-code/test/parser.test.js",
+    "test": "node --test packages/core/test/store.test.js packages/adapters/claude-code/test/parser.test.js",
     "lint": "node --check packages/core/src/*.js packages/server/src/*.js bin/*.js"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "keywords": [
     "ai",
