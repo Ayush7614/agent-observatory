@@ -2,6 +2,7 @@
   "name": "agent-observatory",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "description": "Universal dashboard for coding AI agents — live monitoring, analytics, session recovery, and remote control",
   "license": "MIT",
   "author": "Ayush7614",
@@ -22,6 +23,9 @@
     "ao": "./bin/agent-observatory.js"
   },
   "scripts": {
+    "predev": "node scripts/check-node.mjs",
+    "prestart": "node scripts/check-node.mjs",
+    "pretest": "node scripts/check-node.mjs",
     "dev": "npm run dev --workspace=@agent-observatory/server",
     "dev:dashboard": "npm run dev --workspace=@agent-observatory/dashboard",
     "build": "npm run build --workspaces --if-present",
