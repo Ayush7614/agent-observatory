@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useApi } from '../hooks/useApi'
 import {
   formatAgent,
@@ -42,6 +43,37 @@ function ToolEventRow({ event }) {
 
 export default function SessionDetailPanel({ sessionId, onClose }) {
   const { data, loading, error } = useApi(sessionId ? `/api/sessions/${sessionId}` : null, 0)
+  const [exporting, setExporting] = useState(false)
+  const [exportMsg, setExportMsg] = useState(null)
+
+  async function handleExport() {
+    if (!sessionId) return
+    setExporting(true)
+    setExportMsg(null)
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/export?download=1`, { method: 'POST' })
+      if (!res.ok) throw new Error(`${res.status}`)
+
+      let filename = 'session-export.md'
+      const disposition = res.headers.get('Content-Disposition')
+      const match = disposition?.match(/filename="(.+)"/)
+      if (match) filename = match[1]
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      a.click()
+      URL.revokeObjectURL(url)
+      setExportMsg('Downloaded')
+      setTimeout(() => setExportMsg(null), 3000)
+    } catch {
+      setExportMsg('Export failed')
+    } finally {
+      setExporting(false)
+    }
+  }
 
   if (!sessionId) {
     return (
@@ -94,6 +126,19 @@ export default function SessionDetailPanel({ sessionId, onClose }) {
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handleExport}
+              disabled={exporting}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium bg-accent/20 text-accent border border-accent/30 hover:bg-accent/30 disabled:opacity-50 transition-colors"
+            >
+              {exporting ? 'Exporting…' : 'Export Markdown'}
+            </button>
+            {exportMsg && (
+              <span className={`text-xs ${exportMsg === 'Downloaded' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                {exportMsg}
+              </span>
+            )}
             <span
               className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusBadgeClass(session.status)}`}
             >

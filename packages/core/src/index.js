@@ -12,3 +12,9 @@ export { SessionStore } from './store.js'
 export { SearchIndex } from './search.js'
 export { estimateCost, isLocalModel, MODEL_PRICES } from './cost.js'
 export { computeStats, computeBurnRate } from './analytics.js'
+export {
+  sessionToMarkdown,
+  buildExportFilename,
+  writeSessionExport,
+  resolveSessionRef,
+} from './export.js'
