@@ -1,6 +1,6 @@
 {
   "name": "agent-observatory",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "Universal dashboard for coding AI agents — live monitoring, analytics, session recovery, and remote control",

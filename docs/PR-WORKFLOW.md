@@ -101,6 +101,7 @@ gh pr merge <number> --squash --delete-branch
 | #7 | `feat/dashboard-sessions-search` | Merged — Sessions + search |
 | #8 | `feat/session-export-recover` | Merged — Export + recover CLI |
 | #9 | `feat/hooks-snapshots` | Merged — Hooks polish + auto-snapshots |
-| #10 | `feat/dashboard-settings` | Planned — Settings page |
+| #10 | `feat/dashboard-settings` | Merged — Settings page |
+| #11 | `feat/v0.1.0-launch` | Public launch docs + v0.1.0 |
 
 _Update this table as PRs are opened/merged._
