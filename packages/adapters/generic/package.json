@@ -1,0 +1,8 @@
+{
+  "name": "@agent-observatory/adapter-generic",
+  "version": "0.0.1",
+  "description": "Generic log-tail adapter for Agent Observatory (v0.2)",
+  "type": "module",
+  "main": "src/index.js",
+  "license": "MIT"
+}
