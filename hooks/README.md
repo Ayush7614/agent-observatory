@@ -11,9 +11,15 @@ These scripts are injected into coding agents via `agent-observatory install-hoo
 | `PreToolUse` | `claude-code/pre-tool-use.js` | Remote approvals (v0.2) |
 
 All hooks:
-- POST to `http://127.0.0.1:7420/api/hooks/*`
+- POST to `http://127.0.0.1:7420/api/hooks/*` (port via `AO_PORT` env)
 - **Never block the agent** on failure
 - Exit cleanly even if Observatory is not running
+
+## Verify setup
+
+```bash
+agent-observatory doctor
+```
 
 ## Install
 

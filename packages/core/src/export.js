@@ -130,11 +130,12 @@ export function buildExportFilename(detail) {
 /**
  * @param {import('./types.js').SessionDetail} detail
  * @param {string} exportsDir
+ * @param {{ prefix?: string }} [options]
  * @returns {{ filepath: string, filename: string, markdown: string }}
  */
-export function writeSessionExport(detail, exportsDir) {
+export function writeSessionExport(detail, exportsDir, options = {}) {
   const markdown = sessionToMarkdown(detail)
-  const filename = buildExportFilename(detail)
+  const filename = `${options.prefix || ''}${buildExportFilename(detail)}`
   fs.mkdirSync(exportsDir, { recursive: true, mode: 0o700 })
   const filepath = path.join(exportsDir, filename)
   fs.writeFileSync(filepath, markdown, { encoding: 'utf8', mode: 0o600 })

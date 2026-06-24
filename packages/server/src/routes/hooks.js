@@ -22,11 +22,16 @@ export async function handleHooks(req, res, ctx, url) {
 
   try {
     const body = await readBody(req)
-    const payload = JSON.parse(body)
+    const payload = body.trim() ? JSON.parse(body) : {}
 
-    // Route to appropriate adapter
     const adapter = ctx.adapters.get('claude-code')
-    if (adapter?.parseHookPayload) {
+
+    if (hookType === 'notify' && adapter?.parseNotifyHook) {
+      const notification = adapter.parseNotifyHook(payload)
+      if (notification) {
+        ctx.eventBus.emit(EVENT_TYPES.AGENT_STATE, notification)
+      }
+    } else if (adapter?.parseHookPayload) {
       const event = adapter.parseHookPayload(hookType, payload)
       if (event) {
         ctx.eventBus.emit(EVENT_TYPES.TOOL_EXECUTED, event)
@@ -36,7 +41,6 @@ export async function handleHooks(req, res, ctx, url) {
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ ok: true }))
   } catch (err) {
-    // Hooks must never fail the agent — always return 200
     console.warn(`[hooks] ${hookType} error:`, err.message)
     res.writeHead(200, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ ok: true, warning: err.message }))

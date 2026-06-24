@@ -7,7 +7,6 @@ import path from 'node:path'
 import os from 'node:os'
 import {
   EVENT_TYPES,
-  generateId,
   emptyTokenUsage,
   estimateCost,
   resolvePath,
@@ -229,6 +228,10 @@ export async function getSession(sessionId) {
   return store.getSession(sessionId)
 }
 
+import { parseHookPayload, parseNotifyHook } from './hooks.js'
+
+export { parseHookPayload, parseNotifyHook } from './hooks.js'
+
 export function getHookManifest() {
   const repoRoot = path.resolve(
     path.dirname(new URL(import.meta.url).pathname),
@@ -240,22 +243,5 @@ export function getHookManifest() {
       { event: 'PostToolUse', script: path.join(repoRoot, 'hooks/claude-code/post-tool-use.js') },
       { event: 'PreToolUse', script: path.join(repoRoot, 'hooks/claude-code/pre-tool-use.js') },
     ],
-  }
-}
-
-/**
- * @param {string} hookType
- * @param {unknown} payload
- */
-export function parseHookPayload(hookType, payload) {
-  if (hookType !== 'tool-use' && hookType !== 'post-tool-use') return null
-
-  const data = /** @type {Record<string, unknown>} */ (payload)
-  return {
-    id: generateId(),
-    sessionId: String(data.session_id || data.sessionId || 'unknown'),
-    timestamp: new Date().toISOString(),
-    tool: String(data.tool_name || data.tool || 'unknown'),
-    inputSummary: JSON.stringify(data.tool_input || data.input || '').slice(0, 200),
   }
 }
