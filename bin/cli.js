@@ -7,7 +7,7 @@ import path from 'node:path'
 import os from 'node:os'
 import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { loadConfig, getDataDir, resolvePath } from '@agent-observatory/core'
+import { loadConfig, getDataDir, resolvePath, SessionStore, resolveSessionRef, writeSessionExport } from '@agent-observatory/core'
 import { getHookManifest as claudeCodeHooks } from '@agent-observatory/adapter-claude-code'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -85,11 +85,64 @@ function cmdStatus() {
   }
 }
 
-function cmdRecover() {
+async function cmdRecover() {
   const arg = args[0] || '1'
-  console.log(`[recover] Session recovery — coming in Day 5-6 sprint`)
-  console.log(`[recover] Will export session: ${arg}`)
-  console.log(`[recover] Exports saved to ~/.agent-observatory/exports/`)
+  const config = loadConfig()
+  const dataDir = getDataDir(config)
+  const store = new SessionStore(dataDir)
+  await store.init()
+
+  const session = await resolveSessionRef(store, arg)
+  if (!session) {
+    console.error('No session found for that reference.')
+    console.error('Tip: run "agent-observatory status" and use 1 for latest, 2 for second, or a session id.')
+    await store.close()
+    process.exit(1)
+  }
+
+  const detail = await store.getSession(session.id)
+  if (!detail) {
+    console.error('Session detail not found in index.')
+    await store.close()
+    process.exit(1)
+  }
+
+  const exportsDir = path.join(dataDir, 'exports')
+  const { filepath } = writeSessionExport(detail, exportsDir)
+  await store.close()
+
+  console.log(`Recovered: ${session.projectName || session.id}`)
+  console.log(`Model: ${session.model || 'unknown'}`)
+  console.log(`Messages: ${detail.messages.length} · Tool calls: ${detail.toolEvents.length}`)
+  console.log(`Export saved: ${filepath}`)
+  console.log('')
+  console.log('Paste the export into a new agent session to continue.')
+}
+
+async function cmdExportAll() {
+  const config = loadConfig()
+  const dataDir = getDataDir(config)
+  const store = new SessionStore(dataDir)
+  await store.init()
+
+  const sessions = await store.listSessions()
+  if (!sessions.length) {
+    console.log('No sessions to export.')
+    await store.close()
+    return
+  }
+
+  const exportsDir = path.join(dataDir, 'exports')
+  let count = 0
+  for (const s of sessions) {
+    const detail = await store.getSession(s.id)
+    if (detail) {
+      writeSessionExport(detail, exportsDir)
+      count++
+    }
+  }
+  await store.close()
+  console.log(`Exported ${count} session${count === 1 ? '' : 's'} to ${exportsDir}`)
 }
 
 function mergeHooks(existing, manifest) {
@@ -171,7 +224,8 @@ Usage:
   agent-observatory start              Start the server
   agent-observatory stop               Stop the server
   agent-observatory status             Check server status
-  agent-observatory recover [n|id]     Recover/export a session
+  agent-observatory recover [n|id]     Export session to Markdown (default: latest)
+  agent-observatory export-all         Export all indexed sessions
   agent-observatory install-hooks      Wire Claude Code hooks
   agent-observatory uninstall-hooks    Remove hooks
 
@@ -184,6 +238,7 @@ const commands = {
   stop: cmdStop,
   status: cmdStatus,
   recover: cmdRecover,
+  'export-all': cmdExportAll,
   'install-hooks': cmdInstallHooks,
   'uninstall-hooks': cmdUninstallHooks,
   help: printHelp,
