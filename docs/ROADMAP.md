@@ -17,18 +17,18 @@ GO PUBLIC       approvals        + security       search           + cloud opt-i
 
 ---
 
-## v0.1 — MVP (Week 1) 🎯 CURRENT
+## v0.1 — MVP (Week 1) ✅ SHIPPED
 
 **Theme:** *"See Claude Code clearly"*
 
-- [ ] Claude Code adapter (JSONL + hooks)
-- [ ] Local dashboard (Mission Control, Sessions, Transcript, Settings)
-- [ ] Live SSE activity feed
-- [ ] Token/context/cost display
-- [ ] Full-text search (SQLite FTS5)
-- [ ] Session recovery + export
-- [ ] CLI (`start`, `stop`, `recover`, `install-hooks`)
-- [ ] **Make repository public**
+- [x] Claude Code adapter (JSONL + hooks)
+- [x] Local dashboard (Mission Control, Sessions, Settings)
+- [x] Live SSE activity feed
+- [x] Token/context/cost display
+- [x] Full-text search (SQLite FTS5)
+- [x] Session recovery + export
+- [x] CLI (`start`, `stop`, `recover`, `install-hooks`, `doctor`)
+- [ ] **Make repository public** — see [LAUNCH.md](./LAUNCH.md)
 
 ---
 
@@ -168,11 +168,12 @@ GO PUBLIC       approvals        + security       search           + cloud opt-i
 
 ## Public launch checklist (end of week 1)
 
-- [ ] MVP features complete (see [MVP.md](./MVP.md))
-- [ ] README polished with screenshots/GIF
-- [ ] SECURITY.md reviewed
-- [ ] LICENSE confirmed (MIT)
-- [ ] Remove any secrets / personal paths from git history
+- [x] MVP features complete (see [MVP.md](./MVP.md))
+- [x] README polished with screenshots/GIF ([LAUNCH.md](./LAUNCH.md))
+- [x] SECURITY.md reviewed
+- [x] LICENSE confirmed (MIT)
+- [x] CHANGELOG.md for v0.1.0
+- [ ] Screenshots committed to `docs/screenshots/`
 - [ ] Switch repo visibility: private → **public**
 - [ ] Create GitHub release `v0.1.0`
 - [ ] Optional: Product Hunt / HN / Twitter announcement

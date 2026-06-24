@@ -1,11 +1,5 @@
 # Contributing
 
-> Agent Observatory is currently in **private development**. This guide applies once the repository goes public (~1 week).
-
----
-
-## Welcome
-
 Thank you for your interest in Agent Observatory! We're building the universal dashboard for coding AI agents, and community contributions — especially **adapters** for new agents — are highly valued.
 
 ---
