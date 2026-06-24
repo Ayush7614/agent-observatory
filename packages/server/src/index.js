@@ -17,6 +17,7 @@ import {
 import { createRouter } from './routes/index.js'
 import { AdapterManager } from './adapters.js'
 import { wirePersistence } from './persistence.js'
+import { startSnapshotScheduler } from './snapshots.js'
 
 const LOG_LEVELS = { debug: 0, info: 1, warn: 2, error: 3 }
 const logLevel = LOG_LEVELS[process.env.AO_LOG_LEVEL || 'info'] ?? 1
@@ -66,6 +67,8 @@ export async function startServer(options = {}) {
 
   await adapters.startAll()
 
+  const stopSnapshots = startSnapshotScheduler(store, config, (level, ...args) => log(level, ...args))
+
   await new Promise((resolve, reject) => {
     server.listen(port, host, () => {
       log('info', `Agent Observatory running at http://${host === '0.0.0.0' ? '127.0.0.1' : host}:${port}`)
@@ -74,7 +77,7 @@ export async function startServer(options = {}) {
     server.on('error', reject)
   })
 
-  return { server, config, store, eventBus, adapters }
+  return { server, config, store, eventBus, adapters, stopSnapshots }
 }
 
 // Run directly: node packages/server/src/index.js

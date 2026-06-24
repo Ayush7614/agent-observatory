@@ -145,24 +145,30 @@ async function cmdExportAll() {
   console.log(`Exported ${count} session${count === 1 ? '' : 's'} to ${exportsDir}`)
 }
 
-function mergeHooks(existing, manifest) {
+function mergeHooks(existing, manifest, port) {
   const result = { ...existing }
   if (!result.hooks) result.hooks = {}
 
+  const isObservatoryHook = (entry) =>
+    entry.hooks?.some(
+      (hh) =>
+        hh.command?.includes('agent-observatory/hooks') ||
+        hh.command?.includes('hooks/claude-code')
+    )
+
   for (const hook of manifest.hooks) {
+    const command = `AO_PORT=${port} node "${hook.script}"`
     const entry = {
       matcher: '',
-      hooks: [{ type: 'command', command: `node ${hook.script}` }],
+      hooks: [{ type: 'command', command }],
     }
-    if (!result.hooks[hook.event]) {
-      result.hooks[hook.event] = [entry]
-    } else {
-      const already = result.hooks[hook.event].some((h) =>
-        h.hooks?.some((hh) => hh.command?.includes('agent-observatory'))
-      )
-      if (!already) result.hooks[hook.event].push(entry)
-    }
+
+    const current = result.hooks[hook.event] || []
+    const filtered = current.filter((h) => !isObservatoryHook(h))
+    filtered.push(entry)
+    result.hooks[hook.event] = filtered
   }
+
   return result
 }
 
@@ -176,6 +182,7 @@ function cmdInstallHooks() {
     process.exit(1)
   }
 
+  const config = loadConfig()
   const claudeSettings = path.join(os.homedir(), '.claude', 'settings.json')
   let settings = {}
   if (fs.existsSync(claudeSettings)) {
@@ -186,12 +193,93 @@ function cmdInstallHooks() {
   }
 
   const manifest = claudeCodeHooks()
-  const merged = mergeHooks(settings, manifest)
+  const merged = mergeHooks(settings, manifest, config.port || 7420)
   fs.mkdirSync(path.dirname(claudeSettings), { recursive: true })
   fs.writeFileSync(claudeSettings, JSON.stringify(merged, null, 2))
 
   console.log('Hooks installed for Claude Code')
+  console.log(`Observatory port: ${config.port || 7420}`)
   console.log('Restart Claude Code for hooks to take effect')
+}
+
+async function cmdDoctor() {
+  console.log('\nAgent Observatory Doctor\n')
+
+  const nodeMajor = Number(process.version.slice(1).split('.')[0])
+  const nodeOk = nodeMajor >= 22
+  console.log(`${nodeOk ? '✓' : '✗'} Node.js ${process.version} (requires >= 22)`)
+
+  let config
+  try {
+    config = loadConfig()
+    console.log('✓ Config loaded')
+  } catch (err) {
+    console.log(`✗ Config error: ${err.message}`)
+    return
+  }
+
+  const dataDir = getDataDir(config)
+  const dbPath = path.join(dataDir, 'data.db')
+  console.log(`${fs.existsSync(dbPath) ? '✓' : '○'} Database at ${dbPath}`)
+
+  const pf = pidFile()
+  let running = false
+  if (fs.existsSync(pf)) {
+    try {
+      process.kill(Number(fs.readFileSync(pf, 'utf8').trim()), 0)
+      running = true
+    } catch {
+      // stale pid
+    }
+  }
+  console.log(`${running ? '✓' : '○'} Server ${running ? 'running' : 'stopped'}`)
+
+  const watchDir = resolvePath(config.agents?.['claude-code']?.watchDir || '~/.claude/projects')
+  console.log(`${fs.existsSync(watchDir) ? '✓' : '✗'} Claude watch dir: ${watchDir}`)
+
+  const manifest = claudeCodeHooks()
+  for (const hook of manifest.hooks) {
+    const ok = fs.existsSync(hook.script)
+    console.log(`${ok ? '✓' : '✗'} Hook: ${path.basename(hook.script)}`)
+  }
+
+  const claudeSettings = path.join(os.homedir(), '.claude', 'settings.json')
+  if (fs.existsSync(claudeSettings)) {
+    const settings = JSON.parse(fs.readFileSync(claudeSettings, 'utf8'))
+    const installed = manifest.hooks.every((h) =>
+      settings.hooks?.[h.event]?.some((entry) =>
+        entry.hooks?.some((hh) => hh.command?.includes('hooks/claude-code'))
+      )
+    )
+    console.log(`${installed ? '✓' : '○'} Hooks wired in ~/.claude/settings.json`)
+  } else {
+    console.log('○ Claude settings missing — run: agent-observatory install-hooks')
+  }
+
+  const snapshotsDir = path.join(dataDir, 'snapshots')
+  console.log(`${fs.existsSync(snapshotsDir) ? '✓' : '○'} Snapshots dir: ${snapshotsDir}`)
+
+  if (running) {
+    try {
+      const res = await fetch(`http://127.0.0.1:${config.port || 7420}/api/health`)
+      if (res.ok) {
+        const health = await res.json()
+        console.log('✓ API health OK')
+        if (health.snapshots?.enabled) {
+          console.log(
+            `  Snapshots: every ${health.snapshots.intervalMinutes}m` +
+              (health.snapshots.lastRunAt ? ` · last ${health.snapshots.lastRunAt}` : '')
+          )
+        }
+      } else {
+        console.log(`✗ API health returned ${res.status}`)
+      }
+    } catch {
+      console.log('✗ API unreachable (server process may be stale)')
+    }
+  }
+
+  console.log('')
 }
 
 function cmdUninstallHooks() {
@@ -228,6 +316,7 @@ Usage:
   agent-observatory export-all         Export all indexed sessions
   agent-observatory install-hooks      Wire Claude Code hooks
   agent-observatory uninstall-hooks    Remove hooks
+  agent-observatory doctor             Check setup (Node, hooks, server)
 
 Documentation: ${REPO_ROOT}/docs/
 `)
@@ -239,6 +328,7 @@ const commands = {
   status: cmdStatus,
   recover: cmdRecover,
   'export-all': cmdExportAll,
+  doctor: cmdDoctor,
   'install-hooks': cmdInstallHooks,
   'uninstall-hooks': cmdUninstallHooks,
   help: printHelp,

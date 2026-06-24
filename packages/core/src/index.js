@@ -18,3 +18,4 @@ export {
   writeSessionExport,
   resolveSessionRef,
 } from './export.js'
+export { snapshotActiveSessions, saveSnapshotState, loadSnapshotState } from './snapshots.js'
